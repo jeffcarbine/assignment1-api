@@ -1,0 +1,21 @@
+html
+  head 
+    title Who is my representative?
+  body
+    h1
+    p foo = #{reps}
+    if foo
+      p Found foo!
+    if bar 
+      p Found bar!
+    if arr && arr.length
+      ul
+        for i in arr
+          li= i
+    form(action='/' method='get')
+      input(name='search' placeholder='Search')
+      select(name='type')
+        option(value='zip') Zip
+        option(value='state') State
+        option(value='name') Name
+      button(type='submit') Search
