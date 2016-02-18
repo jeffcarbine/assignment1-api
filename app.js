@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var repsLib = require('./lib/reps.js');
 
 // Routes
 var reps = require('./routes/reps');
@@ -11,12 +12,26 @@ var PORT = 8000;
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+reps.init(app);
+
 app.get('/', function(req, res, next) {
   var method;
 
-  if (req.query.type === 'zip') {
-    console.log('Type is zip');
-    method = reps.allByZip;
+  switch (req.query.type) {
+    case 'zip':
+      method = repsLib.allByZip;
+      break;
+    case 'name':
+      method = repsLib.repsByName;
+      break;
+    case 'state':
+      method = repsLib.repsByState;
+      break;
+    default:
+      method = function(param, cb) {
+        cb(null, []);
+      };
+      break;
   }
 
   if (method) {
@@ -26,11 +41,6 @@ app.get('/', function(req, res, next) {
         reps: people,
         query: req.query,
       });
-    });
-  } else {
-    res.render('index', {
-      reps: null,
-      query: req.query,
     });
   }
 
